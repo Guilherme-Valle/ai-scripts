@@ -2,11 +2,11 @@ import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
   
-def prepare_dataset(dataset, column_x, column_y):
+def prepare_dataset(dataset, column_x, column_y, test_size):
    y = dataset[column_x]
    y = np.where(y == column_y, -1, 1)
    x = dataset.drop(column_x, axis=1)
-   x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.1)
+   x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=test_size)
  
    return [x_train, x_test, y_train, y_test]
  
@@ -43,19 +43,25 @@ def perceptron(X_train, y_train, threshold, eta, epochs):
 def validate_perceptron(x_test, y_test, parameters, bias):
    counter = 0
    output_array = []
+   correct_predictions = 0
   
    for index, row in x_test.iterrows():
        test_result = ativacao(testa_registro(row, parameters, bias), 0.5)
-       # print(
-       #     f'Testando linha {index}, resultado: {test_result}, valor correto: {y_test[counter]}')
+
+       if test_result == y_test[counter]:
+           correct_predictions = correct_predictions + 1
+
        counter = counter + 1
        output_array.append(test_result)
   
-   return output_array
+   return {
+       'predictions': output_array, 
+       'prediction_success': str((correct_predictions / len(y_test) * 100)) + '%'
+   }
  
 
-def run_perceptron_validation(dataset, column_x, column_y):
-    x_train, x_test, y_train, y_test = prepare_dataset(dataset, column_x, column_y)
+def run_perceptron_validation(dataset, column_x, column_y, test_size):
+    x_train, x_test, y_train, y_test = prepare_dataset(dataset, column_x, column_y, test_size)
     
     parameters, bias = perceptron(x_train, y_train, 0.5, 1, 100)
     
