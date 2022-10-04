@@ -12,6 +12,7 @@ def prepare_dataset_iris(dataset, column_x, column_y, test_size):
 
 def prepare_dataset_credit(dataset, test_size):
     y = dataset['CLASS']
+    y = np.where(y == -1, -1, 1)
     x = dataset.drop('CLASS', axis=1)
     x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=test_size)
  
@@ -39,7 +40,8 @@ def perceptron(X_train, y_train, threshold, eta, epochs):
        j = np.random.randint(X_train.shape[0])
        u = np.sum(w*X_train.iloc[j, ]) + b
        y_hat = ativacao(u, threshold)
-       if y_train[j] != y_hat:
+       
+       if j in y_train and y_train[j] != y_hat:
            w = w + eta*(y_train[j] - y_hat)*X_train.iloc[j, ]
            b = b + eta*(y_train[j] - y_hat)
  
@@ -50,10 +52,10 @@ def validate_perceptron(x_test, y_test, parameters, bias):
    counter = 0
    output_array = []
    correct_predictions = 0
+   print(y_test)
   
    for index, row in x_test.iterrows():
        test_result = ativacao(testa_registro(row, parameters, bias), 0.5)
-
        if test_result == y_test[counter]:
            correct_predictions = correct_predictions + 1
 
