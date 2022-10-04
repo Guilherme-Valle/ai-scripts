@@ -44,7 +44,7 @@ def perceptron(X_train, y_train, threshold, eta, epochs):
        u = np.sum(w*X_train.iloc[j, ]) + b
        y_hat = ativacao(u, threshold)
        
-       if j in y_train and y_train[j] != y_hat:
+       if y_train[j] != y_hat:
            w = w + eta*(y_train[j] - y_hat)*X_train.iloc[j, ]
            b = b + eta*(y_train[j] - y_hat)
  
