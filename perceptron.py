@@ -2,14 +2,20 @@ import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
   
-def prepare_dataset(dataset, column_x, column_y, test_size):
+def prepare_dataset_iris(dataset, column_x, column_y, test_size):
    y = dataset[column_x]
    y = np.where(y == column_y, -1, 1)
    x = dataset.drop(column_x, axis=1)
    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=test_size)
  
    return [x_train, x_test, y_train, y_test]
+
+def prepare_dataset_credit(dataset, test_size):
+    y = dataset['CLASS']
+    x = dataset.drop('CLASS', axis=1)
+    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=test_size)
  
+    return [x_train, x_test, y_train, y_test]
  
 def testa_registro(row, parameters, bias):
    soma_valor = 0
@@ -60,8 +66,8 @@ def validate_perceptron(x_test, y_test, parameters, bias):
    }
  
 
-def run_perceptron_validation(dataset, column_x, column_y, test_size):
-    x_train, x_test, y_train, y_test = prepare_dataset(dataset, column_x, column_y, test_size)
+def run_perceptron_validation_iris(dataset, column_x, column_y, test_size):
+    x_train, x_test, y_train, y_test = prepare_dataset_iris(dataset, column_x, column_y, test_size)
     
     parameters, bias = perceptron(x_train, y_train, 0.5, 1, 100)
     
@@ -69,6 +75,16 @@ def run_perceptron_validation(dataset, column_x, column_y, test_size):
 
     return result_validation
  
+
+
+def run_perceptron_validation_credit(dataset, test_size):
+     x_train, x_test, y_train, y_test = prepare_dataset_credit(dataset, test_size)
+    
+     parameters, bias = perceptron(x_train, y_train, 0.5, 1, 100)
+    
+     result_validation = validate_perceptron(x_test, y_test, parameters, bias)
+
+     return result_validation
 
  
  
