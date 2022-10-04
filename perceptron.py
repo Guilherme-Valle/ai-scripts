@@ -1,7 +1,10 @@
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+from sklearn.metrics import f1_score
   
+
 def prepare_dataset_iris(dataset, column_x, column_y, test_size):
    y = dataset[column_x]
    y = np.where(y == column_y, -1, 1)
@@ -52,7 +55,6 @@ def validate_perceptron(x_test, y_test, parameters, bias):
    counter = 0
    output_array = []
    correct_predictions = 0
-   print(y_test)
   
    for index, row in x_test.iterrows():
        test_result = ativacao(testa_registro(row, parameters, bias), 0.5)
@@ -64,7 +66,11 @@ def validate_perceptron(x_test, y_test, parameters, bias):
   
    return {
        'predictions': output_array, 
-       'prediction_success': str((correct_predictions / len(y_test) * 100)) + '%'
+       'prediction_success': str((correct_predictions / len(y_test) * 100)) + '%',
+       'crosstab': pd.crosstab(y_test, output_array, rownames=['True'], colnames=['Predicted'], margins=True),
+       'accuracy_score': accuracy_score(y_test, output_array),
+       'f1_score': f1_score(y_test, output_array, average='macro')
+
    }
  
 
